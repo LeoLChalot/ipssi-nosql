@@ -1,0 +1,6 @@
+.venv
+.env
+.env.local
+uv.lock
+*.txt
+__pycache__
