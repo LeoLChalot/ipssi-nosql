@@ -100,7 +100,8 @@
   .jalon .quand::before{content:"";position:absolute;left:-6px;top:20px;
     width:10px;height:10px;border-radius:50%;background:var(--gold)}
   .jalon .quoi{padding:14px 0 14px 8px;border-bottom:1px solid var(--line)}
-  .jalon .quoi b{display:block;font-family:'Montserrat',sans-serif;font-weight:600;margin-bottom:3px}
+  .jalon .quoi > b{display:block;font-family:'Montserrat',sans-serif;font-weight:600;margin-bottom:3px}
+  .jalon .quoi span b{font-weight:600;color:var(--gold)}
   .jalon .quoi span{color:var(--muted);font-size:14.5px}
   .jalon > :nth-last-child(-n+1){border-bottom:none}
 
@@ -142,7 +143,7 @@
     <li><a href="#calendrier">Le calendrier et les gels</a></li>
     <li><a href="#dataset">Choisir votre jeu de données</a></li>
     <li><a href="#livrables">Les sept livrables</a></li>
-    <li><a href="#bonus">Le bonus IA</a></li>
+    <li><a href="#bonus">Les trois bonus</a></li>
     <li><a href="#bareme">Le barème, point par point</a></li>
     <li><a href="#video">La vidéo de soutenance</a></li>
     <li><a href="#interdits">Ce qui vous coûte des points</a></li>
@@ -163,7 +164,8 @@
   <p>Vous concevez et mettez en ligne, sur MongoDB Atlas, une base de données à partir d'un jeu de données réel que vous aurez choisi. Vous la modélisez en justifiant, vous l'indexez en mesurant, vous en tirez une analyse par agrégations, et vous livrez le tout dans un dépôt propre avec une vidéo de soutenance.</p>
 
   <h3>Composition des groupes</h3>
-  <p>Quatre personnes. Chacune est responsable d'une partie identifiable du projet, et chacune la présente dans la vidéo. Un groupe où une seule personne a tout fait, je le repère en trois questions le jeudi.</p>
+  <p>Vous êtes 31, ce qui donne <strong>sept groupes de quatre et un groupe de trois</strong>. Chacun est responsable d'une partie identifiable du projet, et chacun la présente dans la vidéo. Un groupe où une seule personne a tout fait, je le repère en trois questions le jeudi.</p>
+  <p>Le groupe de trois n'est pas désavantagé : le barème est le même, et j'en tiens compte sur le volume attendu, pas sur les exigences.</p>
 
   <div class="box note">
     <span class="label">Une alternative recevable</span>
@@ -184,19 +186,22 @@
     <div class="quoi"><b>Agrégation</b><span>Vous apprenez ce qui alimentera votre rapport analytique. Venez avec votre jeu de données en tête, les exemples de la journée y gagneront.</span></div>
 
     <div class="quand">Jeudi 11h00</div>
-    <div class="quoi"><b>Validation du sujet</b><span>Passage rapide des huit groupes. Vous présentez votre jeu de données et votre intention. Sans validation, vous ne partez pas.</span></div>
+    <div class="quoi"><b>Validation du sujet</b><span>Passage rapide des huit groupes, dans l'ordre du tirage. Vous présentez votre jeu de données et votre intention. Sans validation, vous ne partez pas.</span></div>
 
     <div class="quand">Jeudi 14h00</div>
     <div class="quoi"><b>Travail en autonomie</b><span>Je circule dans les groupes.</span></div>
 
     <div class="quand">Jeudi après-midi</div>
-    <div class="quoi"><b>Mini-défense notée, 5 à 7 minutes par groupe</b><span>Vous défendez votre schéma et vous expliquez une agrégation à la volée. Cette défense compte dans la note de compréhension architecturale. À la fin, vous tirez au sort la <b>question de défense</b> que votre vidéo devra obligatoirement traiter.</span></div>
+    <div class="quoi"><b>Mini-défense notée, 5 à 7 minutes par groupe</b><span>Elle se fait <b>à l'oral</b>, devant moi. Vous défendez votre schéma, et vous expliquez une agrégation à la volée. Votre fiche de modélisation, déjà déposée, me sert de support : je pointe une ligne, vous la justifiez. Cette défense compte dans la note de compréhension architecturale.</span></div>
+
+    <div class="quand">Juste après</div>
+    <div class="quoi"><b>Tirage au sort de votre question de défense</b><span>Chaque groupe tire une question au hasard, à la fin de sa mini-défense. C'est celle que votre vidéo devra traiter explicitement. Vous la connaissez donc dès jeudi après-midi, ce qui vous laisse le temps d'y répondre sérieusement.</span></div>
 
     <div class="quand">Vendredi 9h00</div>
     <div class="quoi"><b>Finalisation</b><span>Code et support de présentation.</span></div>
 
     <div class="quand" style="color:var(--err)">Vendredi 15h00</div>
-    <div class="quoi"><b style="color:var(--err)">Gel du code et des livrables</b><span>Dépôt Teams : dépôt de code, README, notebook, support de présentation. Rien n'est accepté après 15h00.</span></div>
+    <div class="quoi"><b style="color:var(--err)">Gel du code et des livrables</b><span>Dépôt Teams : le lien vers votre dépôt GitHub, ou l'archive du code, plus le support de présentation. Rien n'est accepté après 15h00.</span></div>
 
     <div class="quand" style="color:var(--err)">Vendredi 16h45</div>
     <div class="quoi"><b style="color:var(--err)">Gel des vidéos</b><span>Déposez tôt. Huit groupes qui téléversent des fichiers vidéo en même temps à 16h40, c'est un incident garanti.</span></div>
@@ -264,7 +269,8 @@
 
   <div class="liv">
     <p class="t">5. Un rapport analytique par agrégations</p>
-    <p class="d">Au moins trois agrégations qui répondent à de vraies questions métier, avec une visualisation. Notebook propre, Streamlit ou FastAPI, au choix. Ce que vous montrez doit intéresser quelqu'un qui ne connaît pas vos données. Moi compris.</p>
+    <p class="d">Au moins trois agrégations qui répondent à de vraies questions métier, avec une visualisation. Ce que vous montrez doit intéresser quelqu'un qui ne connaît pas vos données. Moi compris.</p>
+    <p class="d" style="margin-top:10px"><b>Le format est libre</b>, et c'est un point sur lequel un d'entre vous m'a fait une remarque juste. Un notebook n'est pas « non professionnel » : c'est l'outil approprié pour explorer et restituer une analyse. Ce qu'il n'est pas, c'est un format pour du code réutilisable, parce qu'il n'a ni tests, ni imports propres, et qu'il dépend de l'ordre d'exécution. <b>La règle utile est donc : notebook pour l'analyse, modules Python pour ce qui est réutilisé.</b> Un projet entièrement structuré en modules est accepté et rapporte un point de bonus.</p>
   </div>
 
   <div class="liv">
@@ -275,23 +281,47 @@
   <div class="liv">
     <p class="t">7. Un dépôt propre avec son README</p>
     <p class="d">Le README doit permettre à quelqu'un d'autre de faire tourner votre projet : prérequis, installation, chargement des données, lancement. Plus le schéma et la fiche de modélisation. <b>Aucun identifiant en clair nulle part.</b></p>
+    <p class="d" style="margin-top:10px"><b>Sur GitHub de préférence.</b> Ce n'est pas obligatoire, mais c'est fortement encouragé : dans ce cas, vous ne déposez sur Teams qu'un lien vers le dépôt, et j'y accède directement. C'est aussi ce qui se passera dans votre vie professionnelle. Si vous préférez déposer une archive sur Teams, c'est accepté sans perte de points.</p>
   </div>
 </section>
 
 <!-- ============ 5 ============ -->
 <section id="bonus">
-  <h2><span class="num">05</span>Le bonus IA</h2>
-  <p class="sub">Jusqu'à trois points supplémentaires. Jamais obligatoire, et il ne compense pas un socle bâclé : je ne l'attribue que si le reste tient debout.</p>
+  <h2><span class="num">05</span>Les trois bonus</h2>
+  <p class="sub">Quatre points au total, répartis sur trois portes d'entrée indépendantes. Aucun n'est obligatoire, et aucun ne compense un socle bâclé : je ne les attribue que si le reste tient debout.</p>
+
+  <table>
+    <thead><tr><th style="width:32%">Bonus</th><th style="width:10%">Pts</th><th>Ce qu'il faut faire</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Recherche vectorielle</b></td><td class="pts">2</td>
+        <td>Un composant de recherche sémantique sur vos propres données, avec Atlas Vector Search. On le construit ensemble jeudi matin, vous aurez tout pour le reproduire</td>
+      </tr>
+      <tr>
+        <td><b>Interface d'interrogation</b></td><td class="pts">1</td>
+        <td>Une interface qui permet d'interroger votre application sans passer par un terminal. Streamlit, Gradio, une page React, une API exposée avec FastAPI : le choix vous appartient, seul compte le fait qu'un utilisateur puisse s'en servir</td>
+      </tr>
+      <tr>
+        <td><b>Projet structuré</b></td><td class="pts">1</td>
+        <td>Du code organisé en modules Python, avec des dossiers, des fonctions réutilisables et des imports propres, plutôt qu'un notebook unique. Le notebook garde sa place pour l'analyse</td>
+      </tr>
+      <tr class="total"><td>Total des bonus</td><td class="pts">+4</td><td></td></tr>
+    </tbody>
+  </table>
 
   <div class="box ok">
-    <span class="label">Deux façons de l'obtenir</span>
-    <p><strong>Un composant de recherche vectorielle</strong> sur vos propres données, construit avec Atlas Vector Search. On le verra jeudi matin, et vous aurez de quoi le reproduire.</p>
-    <p><strong>Ou un usage de l'IA documenté et critiqué</strong> : les prompts que vous avez utilisés, ce que le modèle a produit, les corrections que vous y avez apportées, et les limites que vous avez constatées. Le mot important est <em>critiqué</em> : un journal de prompts sans analyse ne vaut rien.</p>
+    <span class="label">Pourquoi trois bonus plutôt qu'un</span>
+    <p>Parce qu'ils ne visent pas les mêmes groupes. La recherche vectorielle demande d'être allé au bout de jeudi matin. L'interface demande des compétences que certains d'entre vous ont déjà par ailleurs. La structuration ne demande que de la rigueur. <strong>Chacun peut en viser au moins un</strong>, et un groupe qui les prend tous les trois a fait un vrai travail d'ingénierie.</p>
   </div>
+
+  <h3>Une quatrième voie, si aucune des trois ne vous convient</h3>
+
+  <p>Un <strong>usage de l'IA documenté et critiqué</strong> peut remplacer le bonus de recherche vectorielle, pour un point au lieu de deux : les prompts utilisés, ce que le modèle a produit, les corrections que vous y avez apportées, et les limites constatées. Le mot important est <em>critiqué</em>.</p>
 
   <div class="box stop">
     <span class="label">Ce qui ne rapporte aucun bonus</span>
     <p>« On a utilisé ChatGPT pour écrire les agrégations » n'est pas un bonus, c'est un aveu si vous ne savez pas les expliquer. Le bonus récompense la maîtrise de l'outil, pas son usage.</p>
+    <p>Et une interface qui ne fait qu'afficher une page vide ne rapporte rien non plus : je dois pouvoir m'en servir pour interroger vos données.</p>
   </div>
 </section>
 
@@ -305,7 +335,7 @@
     <tbody>
       <tr>
         <td><b>Fonctionnel</b></td><td class="pts">6</td>
-        <td>La base tourne sur Atlas et on s'y connecte. Le CRUD marche. Les agrégations produisent un résultat. La sauvegarde et la restauration fonctionnent. Le projet se lance en suivant le README.</td>
+        <td>La base tourne sur Atlas et on s'y connecte. Le CRUD marche. Les agrégations produisent un résultat. La sauvegarde et la restauration fonctionnent. Le projet se lance en suivant le README, quel que soit son format.</td>
       </tr>
       <tr>
         <td><b>Qualité technique</b></td><td class="pts">6</td>
@@ -323,8 +353,8 @@
         <td>Total</td><td class="pts">20</td><td></td>
       </tr>
       <tr>
-        <td><b>Bonus IA</b></td><td class="pts">+3</td>
-        <td>Recherche vectorielle sur vos données, ou usage de l'IA documenté et critiqué. S'ajoute dans la limite du barème.</td>
+        <td><b>Bonus</b></td><td class="pts">+4</td>
+        <td>Recherche vectorielle (2), interface d'interrogation (1), projet structuré (1). Détaillés à la section précédente. Ils s'ajoutent dans la limite du barème.</td>
       </tr>
     </tbody>
   </table>
@@ -372,8 +402,9 @@
   </div>
 
   <div class="box stop">
-    <span class="label">Un notebook non exécuté, un README qui ne marche pas</span>
-    <p>Un notebook rendu sans ses sorties, un README dont les commandes échouent, un dépôt dont les données ne se chargent pas. Ce sont des points que je retire sur le fonctionnel, et ils se perdent bêtement : dix minutes de vérification les auraient sauvés.</p>
+    <span class="label">Du travail que je ne peux pas faire tourner</span>
+    <p>Quel que soit le format que vous avez choisi, la règle est la même : <b>je dois pouvoir reproduire ce que vous montrez</b>.</p>
+    <p>Si vous rendez un notebook, il doit être exécuté, avec ses sorties visibles. Si vous rendez des modules Python, ils doivent s'exécuter en suivant le README, sans que j'aie à deviner un chemin ou une variable d'environnement. Dans les deux cas, un README dont les commandes échouent ou un chargement de données qui ne passe pas coûte des points sur le fonctionnel. Et ils se perdent bêtement : dix minutes de vérification sur une machine propre les auraient sauvés.</p>
   </div>
 
   <div class="box ok">
