@@ -93,7 +93,7 @@ Pour faire tourner MongoDB en local sans polluer votre système hôte, Docker es
 Clonez le dépôt Git et placez-vous dans le répertoire du projet :
 
 ```bash
-git clone <URL_DU_DEPOT>
+git clone https://github.com/LeoLChalot/ipssi-nosql
 cd projet
 ```
 
@@ -126,7 +126,6 @@ Les identifiants et chaînes de connexion ne doivent **jamais** être écrits en
 
    # URI de connexion locale (Docker ou instance native)
    LOCAL_URI="mongodb://localhost:27017"
-   MONGODB_URI="mongodb://localhost:27017"
    ```
 
 3. Assurez-vous que les fichiers `.env` et `.env.local` sont bien ignorés par Git (vérifiez que les lignes sont présentes dans `.gitignore`).
@@ -273,23 +272,81 @@ mongorestore --uri="mongodb://localhost:27017" ./backups/dump_xxx/
 
 ---
 
-## 6. Dépannage & Erreurs fréquentes
+## Choix du schéma final (Accès dominant)
 
-| Message / Problème | Origine | Solution |
-| :--- | :--- | :--- |
-| `ServerSelectionTimeoutError` | L'adresse IP de votre machine n'est pas autorisée sur Atlas ou pare-feu réseau. | Sur Atlas, allez dans **Network Access** > **Add IP Address** > activez `0.0.0.0/0`. Patientez une minute. |
-| `Authentication failed` / `bad auth` | L'utilisateur n'existe pas dans le cluster ou le mot de passe est incorrect. | Allez dans **Database Access**, vérifiez l'utilisateur MongoDB créé (différent des identifiants du compte Atlas). |
-| Échec de connexion sans message clair | Le mot de passe contient des caractères réservés pour une URL (`@`, `:`, `/`, `#`, `%`). | Modifiez le mot de passe dans Atlas pour n'utiliser que des caractères alphanumériques simples. |
-| `mongoimport: command not found` | Le paquet `mongodb-database-tools` n'est pas installé. | `mongosh` n'inclut pas les Database Tools. Installez-les séparément (voir [Prérequis](#2-prérequis)) et rechargez le terminal. |
-| `Failed: cannot decode array into a Document` | Le fichier JSON importé est un tableau global `[...]`. | Ajoutez impérativement le drapeau `--jsonArray` à votre commande `mongoimport`. |
-| `port is already allocated` (Docker) | Le port local `27017` est déjà utilisé par un autre service. | Stoppez le MongoDB local hôte (`sudo systemctl stop mongod`) ou détruisez le conteneur en conflit (`docker rm -f mongo8`). |
-| `dnspython module must be installed` | Support DNS manquant pour les chaînes `mongodb+srv://`. | Exécutez `uv add "pymongo[srv]"`. |
+```graphql
+{
+  "_id": ObjectId(str),
+  "Num_Acc": int,
+  "date": str,
+  "jour": int,
+  "mois": int,
+  "an": int,
+  "hrmn": str,
+  "lum": int,
+  "dep": str,
+  "com": str,
+  "agg": int,
+  "int": int,
+  "atm": int,
+  "col": int,
+  "adr": str,
+  "coordonnees": {
+    "type": "Point",
+    "coordinates": [float, float]
+  },
+  "lieu": {
+    "catr": int,
+    "voie": str,
+    "circ": int,
+    "nbv": int,
+    "surf": int,
+    "vma": int
+  },
+  "vehicules": [
+    {
+      "id_vehicule": str,
+      "Num_Veh": str,
+      "catv": int,
+      "motor": int,
+      "choc": int,
+      "usagers": [
+        {
+          "id_usager": str,
+          "place": int,
+          "catu": int,
+          "grav": int,
+          "sexe": int,
+          "An_nais": int
+        }
+      ]
+    }
+  ]
+}
+```
 
----
+Lors de la transition des 4 tables relationnelles vers MongoDB, les questions clés étaient :
 
-## 7. Règles de sécurité
+- **Quel est le modèle d'accès principal ?** Un accident est-il consulté comme une entité complète ou accède-t-on fréquemment aux usagers/véhicules isolément sans leur contexte ?
+L'analyse routière nécessite presque toujours la restitution complète de la scène (lieu, météo, véhicules et victimes).
 
-> 🛑 **Attention : Aucune fuite d'identifiants dans Git**
-> * Ne committez **JAMAIS** de fichier `.env`, `.env.local` ou de chaîne de connexion avec mot de passe dans Git.
-> * Vérifiez systématiquement votre fichier `.gitignore` et l'état de votre copie avec `git status` avant tout `git push`.
-> * La présence d'identifiants en clair dans le dépôt public ou privé entraîne des pénalités directes selon le barème du module.
+- **Quelles sont les cardinalités et la volumétrie prévisible ?** Le nombre de véhicules et d'usagers par accident risque-t-il d'exploser et d'atteindre la limite technique de 16 Mo par document BSON ?
+Un accident routier implique rarement plus d'une dizaine de véhicules et quelques dizaines d'usagers. 
+
+- **La cardinalité est strictement bornée. Quel est le coût des jointures relationnelles ($lookup) ?** Conserver 4 collections séparées impose 3 jointures consécutives à chaque lecture, ce qui dégrade fortement le débit de requêtes.
+
+### Tableau des cardinalités
+
+| Relation source |	Cardinalité   | Choix d'implémentation MongoDB	    | Justification |
+|:----------------|:--------------|:------------------------------------|:--------------|
+| Caractéristiques - Lieux |	1 - 1	| Sous-document lieu à la racine	| Évite une collection séparée tout en isolant les attributs d'infrastructure routière des données de circonstance |
+| Accident - Coordonnées | 1 - 1	| Sous-document GeoJSON localisation	| Normalisation au format standard Point [long, lat] pour activer l'indexation spatiale 2dsphere.
+| Accident - Véhicules	| 1 - N |	Tableau vehicules: List[Object]	| Relation 1-N à cardinalité faible : intégration directe dans le document parent sans surcharger la mémoire.
+| Véhicule - Usagers | 1 - N | Tableau usagers: List[Object] imbriqué dans chaque véhicule |	Modélise la réalité physique : un usager (conducteur, passager, ou piéton heurté) est rattaché à un véhicule précis |
+
+
+![Transformation des ensembles pour formater le document finale](image.png)
+
+### Workflow de nettoyage et d'ingestion
+
+![Étapes de nettoyage](image-1.png)
