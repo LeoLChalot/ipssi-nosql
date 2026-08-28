@@ -4,3 +4,5 @@
 uv.lock
 *.txt
 __pycache__
+backups/
+.claude/
