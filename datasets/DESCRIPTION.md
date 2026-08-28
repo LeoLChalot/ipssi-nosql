@@ -93,6 +93,8 @@ Le dataset du Bulletin d'Analyse des Accidents Corporels de la circulation routi
 
 ## Relations et Cardinalités
 
+![Transformation des ensembles pour formater le document finale](image.png)
+
 ## Schéma final cible
 
 ```json
