@@ -1,0 +1,90 @@
+@startuml
+skinparam class {
+    BackgroundColor #FFFFFF
+    ArrowColor #2C3E50
+    BorderColor #2C3E50
+}
+skinparam roundcorner 5
+
+class "Caractéristiques" << (C,#4CAF50) collection >> {
+    **_id** : ObjectId
+    -- caractéristiques --
+    Num_Acc : int
+    jour : int
+    mois : int
+    an : int
+    hrmn : datetime
+    lum : int
+    dep : string
+    com : string
+    agg : int
+    int : int
+    atm : int
+    col : int
+    adr : string
+    lat : string
+    long : string
+}
+
+class "Lieux" << (C,#4CAF50) collection >> {
+    **_id** : ObjectId
+    -- caractéristiques --
+    Num_Acc : int
+    catr : int
+    voie : string
+    V1 : int
+    V2 : string
+    circ : int
+    nbv : int
+    vosp : int
+    prof : int
+    pr : string
+    pr1 : string
+    plan : int
+    larrout : int
+    surf : int
+    infra : int
+    situ : int
+    vma : int
+}
+
+class "Véhicules" << (C,#4CAF50) collection >> {
+    **_id** : ObjectId
+    -- caractéristiques --
+    Num_Acc : int
+    id_vehicule : string
+    Num_Veh : string
+    senc : int
+    catv : int
+    obs : int
+    obsm : int
+    choc : int
+    manv : int
+    motor : int
+    occutc : int
+}
+
+class "Usagers" << (C,#4CAF50) collection >> {
+    **_id** : ObjectId
+    -- caractéristiques --
+    Num_Acc : int
+    id_usager : string
+    id_vehicule : string
+    num_Veh : int
+    place : int
+    catu : int
+    grav : int
+    sexe : int
+    An_nais : int
+    trajet : int
+    secu1-3 : int
+    locp : int
+    actp : string
+    etatp : int
+}
+
+Caractéristiques --> Lieux
+Lieux --> Véhicules
+Véhicules --> Usagers
+
+@enduml

@@ -1,0 +1,97 @@
+@startuml
+skinparam class {
+    BackgroundColor #FFFFFF
+    ArrowColor #2C3E50
+    BorderColor #2C3E50
+}
+skinparam roundcorner 5
+
+class "Accidents" << (C,#4CAF50) collection >> {
+    **_id** : ObjectId
+    **Num_Acc** : int
+    -- Date & Heure --
+    date : datetime
+    jour : int
+    mois : int
+    an : int
+    hrmn : string
+    -- Environnement --
+    adr : string
+    dep : string
+    com : string
+    agg : int
+    int : int
+    atm : int
+    lum : int
+    col : int
+    coordonnees : Coordonnees
+    -- Imbrications --
+    lieu : Lieu
+    vehicules : List<Vehicule>
+}
+
+class "Coordonnees" << (D,#FFA726) subdocument >> {
+    lat : double
+    long : double
+}
+
+class "Lieu" << (D,#FFA726) subdocument >> {
+    catr : int
+    voie : string
+    V1 : int
+    V2 : string
+    circ : int
+    nbv : int
+    vosp : int
+    prof : int
+    pr : string
+    pr1 : string
+    plan : int
+    larrout : int
+    surf : int
+    infra : int
+    situ : int
+    vma : int
+}
+
+class "Vehicule" << (D,#FFA726) subdocument >> {
+    id_vehicule : string
+    Num_Veh : string
+    senc : int
+    catv : int
+    obs : int
+    obsm : int
+    choc : int
+    manv : int
+    motor : int
+    occutc : int
+    usagers : List<Usager>
+}
+
+class "Usager" << (D,#FFA726) subdocument >> {
+    id_usager : string
+    place : int
+    catu : int
+    grav : int
+    sexe : int
+    An_nais : int
+    trajet : int
+    secu1_3 : int
+    locp : int
+    actp : string
+    etatp : int
+}
+
+Accidents *-- "1" Coordonnees : Géolocalisé
+Accidents *-- "1" Lieu : S'est produit
+Accidents *-- "1..*" Vehicule : Implique
+Vehicule *-- "1..*" Usager : Transporte
+
+note right of Accidents
+  **Modélisation NoSQL :**
+  - **Lieu & Coordonnées** : Sous-documents 1:1 imbriqués.
+  - **Véhicules** : Tableau de sous-documents 1:N.
+  - **Usagers** : Tableau imbriqué dans chaque véhicule.
+end note
+
+@enduml

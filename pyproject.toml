@@ -5,6 +5,8 @@ requires-python = ">=3.12"
 
 dependencies = [
     "ipykernel>=7.3.0",
+    "pandas>=3.0.5",
     "pymongo>=4.17.0",
     "python-dotenv>=1.2.3",
+    "sentence-transformers>=6.0.0",
 ]

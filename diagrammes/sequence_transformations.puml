@@ -1,0 +1,41 @@
+@startuml
+autonumber
+skinparam style strictuml
+skinparam defaultFontName Arial
+skinparam SequenceBoxBackgroundColor #F8F9F9
+skinparam SequenceBoxBorderColor #BDC3C7
+skinparam ParticipantBorderColor #2C3E50
+skinparam ParticipantBackgroundColor #FFFFFF
+
+actor "Utilisateur / Notebook" as User
+participant "Script Python (ETL)" as ETL
+database "Fichiers CSV (Disque)" as CSV
+database "MongoDB" as Mongo
+
+User -> ETL : Lancer le script d'ingestion
+
+== 1. Extraction des données brutes ==
+ETL -> CSV : Lecture des CSV via Pandas\n(caracteristiques, lieux, vehicules, usagers)
+CSV --> ETL : DataFrames bruts
+
+== 2. Nettoyage et typage ==
+ETL -> ETL : Substitution des NaN par None (null BSON)
+ETL -> ETL : Nettoyage des coordonnées (string -> float)
+ETL -> ETL : Parsing date/heure (an, mois, jour, hrmn -> datetime UTC)
+
+== 3. Dénormalisation & Imbrication en mémoire ==
+ETL -> ETL : A. Regrouper les usagers par véhicule (id_vehicule)
+ETL -> ETL : B. Imbriquer les usagers dans les véhicules correspondants
+ETL -> ETL : C. Indexer les lieux (sous-document 1:1) par Num_Acc
+ETL -> ETL : D. Assembler les documents racines 'Accidents'\n(attributs racine + coordonnees + lieu + vehicules)
+
+== 4. Ingestion & Indexation ==
+ETL -> Mongo : Réinitialiser la collection (accidents.drop())
+ETL -> Mongo : Ingestion par lot (insert_many(accidents_docs))
+Mongo --> ETL : Acquittement d'écriture (nb documents insérés)
+ETL -> Mongo : Création de l'index unique (Num_Acc: 1)
+ETL -> Mongo : Création de l'index secondaire (dep: 1)
+Mongo --> ETL : Acquittement des index
+
+ETL --> User : Confirmation du chargement & log de validation
+@enduml

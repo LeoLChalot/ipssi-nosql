@@ -1,0 +1,60 @@
+@startuml
+skinparam linetype ortho
+skinparam roundcorner 6
+skinparam defaultFontName Arial
+
+' Styles des éléments
+skinparam rectangle {
+    BackgroundColor #FFFFFF
+    BorderColor #2C3E50
+    BorderThickness 1.5
+}
+skinparam database {
+    BackgroundColor #E8F5E9
+    BorderColor #2E7D32
+    BorderThickness 1.5
+}
+skinparam file {
+    BackgroundColor #E3F2FD
+    BorderColor #1565C0
+    BorderThickness 1.2
+}
+
+' 1. Sources de données
+package "Fichiers sources (ONISR 2024)" {
+    file "caracteristiques-2024.csv" as F_CARACT
+    file "lieux-2024.csv" as F_LIEUX
+    file "vehicules-2024.csv" as F_VEH
+    file "usagers-2024.csv" as F_USG
+}
+
+' 2. Étapes de manipulation
+rectangle "<b>1. Ingestion & Assainissement</b>\n- Lecture des 4 CSV (Pandas)\n- Remplacement des NaN par None (null BSON)" as STEP1
+
+rectangle "<b>2. Normalisation des types</b>\n- Calcul du timestamp UTC (an + mois + jour + hrmn)\n- Nettoyage des coordonnées (virgule -> point, cast float)" as STEP2
+
+rectangle "<b>3. Dénormalisation : Usagers -> Véhicules</b>\n- Indexation des usagers par 'id_vehicule'\n- Retrait des clés redondantes\n- Création du tableau 'usagers: List[Usager]'" as STEP3
+
+rectangle "<b>4. Dénormalisation : Véhicules -> Accidents</b>\n- Groupement des véhicules enrichis par 'Num_Acc'\n- Création du tableau 'vehicules: List[Vehicule]'" as STEP4
+
+rectangle "<b>5. Assemblage du Document Racine</b>\n- Encapsulation du sous-document 1:1 'lieu'\n- Encapsulation de l'objet 'coordonnees'\n- Intégration de la liste 'vehicules'" as STEP5
+
+' 3. Base de données et index
+database "<b>MongoDB</b>\nCollection target : accidents" as MONGODB
+
+rectangle "<b>6. Indexation & Clés de recherche</b>\n- Création de l'index unique sur 'Num_Acc'\n- Création de l'index simple sur 'dep'" as STEP6
+
+' Enchaînement du flux
+F_CARACT --> STEP1
+F_LIEUX --> STEP1
+F_VEH --> STEP1
+F_USG --> STEP1
+
+STEP1 --> STEP2
+STEP2 --> STEP3
+STEP3 --> STEP4
+STEP4 --> STEP5
+STEP5 --> MONGODB : insert_many()
+MONGODB --> STEP6
+
+@enduml
